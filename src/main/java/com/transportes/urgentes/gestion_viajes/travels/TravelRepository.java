@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface TravelRepository extends JpaRepository<Travel, Long> {
-    Optional<Travel> findByConductor(String username);
+    Optional<Travel> findByConductor(User user);
 }
