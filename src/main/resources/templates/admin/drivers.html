@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gestión de Conductores</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Gestión de Conductores</h1>
+            <div class="user-info" th:if="${user != null}">
+                <span>Bienvenido, <span th:text="${user.nombre} + ' ' + ${user.apellido}"></span></span>
+                <a href="/admin/dashboard" class="btn">Volver al Dashboard</a>
+                <a href="/logout" class="btn btn-danger">Cerrar Sesión</a>
+            </div>
+        </header>
+
+        <div class="table-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Lista de Conductores</h2>
+                
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Licencia</th>
+                        <th>Disponibilidad</th>
+                        <th>Calificación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="driver : ${drivers}">
+                        <td th:text="${driver.id}"></td>
+                        <td th:text="${driver.nombre}"></td>
+                        <td th:text="${driver.apellido}"></td>
+                        <td th:text="${driver.licenciaConduccion}"></td>
+                        <td>
+                            <span th:if="${driver.disponible}" style="color: green;">Disponible</span>
+                            <span th:unless="${driver.disponible}" style="color: red;">No Disponible</span>
+                        </td>
+                        <td th:text="${driver.calificacion}"></td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html> 
