@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard Administrador</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Dashboard Administrador</h1>
+            <div class="user-info" th:if="${user != null}">
+                <span>Bienvenido, <span th:text="${user.nombre} + ' ' + ${user.apellido}"></span></span>
+                <a href="/logout" class="btn btn-danger">Cerrar Sesión</a>
+            </div>
+        </header>
+
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <h3>Total Usuarios</h3>
+                <p th:text="${totalUsers}">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Conductores Activos</h3>
+                <p th:text="${activeDrivers}">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Órdenes Pendientes</h3>
+                <p th:text="${pendingOrders}">0</p>
+            </div>
+        </div>
+
+        <nav class="dashboard-nav">
+            <a href="/admin/users" class="btn">Gestionar Usuarios</a>
+            <a href="/admin/drivers" class="btn">Gestionar Conductores</a>
+            <a href="/admin/orders" class="btn">Gestionar Órdenes</a>
+            <a href="/admin/reports" class="btn">Reportes</a>
+        </nav>
+    </div>
+</body>
+</html> 

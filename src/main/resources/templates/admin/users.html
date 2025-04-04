@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gestión de Usuarios</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Gestión de Usuarios</h1>
+            <div class="user-info" th:if="${user != null}">
+                <span>Bienvenido, <span th:text="${user.nombre} + ' ' + ${user.apellido}"></span></span>
+                <a href="/admin/dashboard" class="btn">Volver al Dashboard</a>
+                <a href="/logout" class="btn btn-danger">Cerrar Sesión</a>
+            </div>
+        </header>
+
+        <div class="table-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Lista de Usuarios</h2>
+                
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.id}"></td>
+                        <td th:text="${user.nombre}"></td>
+                        <td th:text="${user.apellido}"></td>
+                        <td th:text="${user.email}"></td>
+                        <td th:text="${user.role}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html> 
