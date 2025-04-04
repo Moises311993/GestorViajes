@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Reportes</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Reportes</h1>
+            <div class="user-info" th:if="${user != null}">
+                <span>Bienvenido, <span th:text="${user.nombre} + ' ' + ${user.apellido}"></span></span>
+                <a href="/admin/dashboard" class="btn">Volver al Dashboard</a>
+                <a href="/logout" class="btn btn-danger">Cerrar Sesión</a>
+            </div>
+        </header>
+
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <h3>Órdenes Diarias</h3>
+                <p th:text="${dailyOrders}">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Ingresos Mensuales</h3>
+                <p th:text="${#numbers.formatDecimal(monthlyRevenue, 0, 'POINT', 2, 'COMMA')}">0.00</p>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <h2>Estadísticas de Conductores</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Total Conductores</th>
+                        <th>Conductores Activos</th>
+                        <th>Calificación Promedio</th>
+                        <th>Total Viajes Completados</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td th:text="${driverStats.totalDrivers}"></td>
+                        <td th:text="${driverStats.activeDrivers}"></td>
+                        <td th:text="${#numbers.formatDecimal(driverStats.averageRating, 1, 'POINT', 1, 'COMMA')}"></td>
+                        <td th:text="${driverStats.totalTripsCompleted}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-container">
+            <h2>Top 5 Conductores</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Calificación</th>
+                        <th>Viajes Completados</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="driver : ${driverStats.topDrivers}">
+                        <td th:text="${driver.nombre + ' ' + driver.apellido}"></td>
+                        <td th:text="${#numbers.formatDecimal(driver.calificacion, 1, 'POINT', 1, 'COMMA')}"></td>
+                        <td th:text="${driver.viajesCompletados}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html> 

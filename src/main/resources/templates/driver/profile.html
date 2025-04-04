@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mi Perfil - Conductor</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Mi Perfil</h1>
+        <nav>
+            <a href="/driver/dashboard">Dashboard</a>
+            <a href="/driver/orders">Órdenes</a>
+            <a href="/driver/profile" class="active">Perfil</a>
+            <a href="/logout">Cerrar Sesión</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="alert" th:if="${success}" th:text="${success}"></div>
+        <div class="alert error" th:if="${error}" th:text="${error}"></div>
+
+        <section class="profile-section">
+            <h2>Información Personal</h2>
+            <form th:action="@{/driver/profile}" method="post" th:object="${conductor}">
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" th:field="*{nombre}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" id="apellido" th:field="*{apellido}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" th:field="*{email}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="licenciaConduccion">Licencia de Conducción</label>
+                    <input type="text" id="licenciaConduccion" th:field="*{licenciaConduccion}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tipoLicencia">Tipo de Licencia</label>
+                    <input type="text" id="tipoLicencia" th:field="*{tipoLicencia}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Estado Actual</label>
+                    <p th:text="${conductor.disponible ? 'Disponible' : 'No Disponible'}"></p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Calificación</label>
+                    <p th:text="${conductor.calificacion}">0.0</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Viajes Completados</label>
+                    <p th:text="${conductor.viajesCompletados}">0</p>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="save-btn">Guardar Cambios</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Transportes Urgentes. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html> 

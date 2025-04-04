@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gestión de Órdenes</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Gestión de Órdenes</h1>
+            <div class="user-info" th:if="${user != null}">
+                <span>Bienvenido, <span th:text="${user.nombre} + ' ' + ${user.apellido}"></span></span>
+                <a href="/admin/dashboard" class="btn">Volver al Dashboard</a>
+                <a href="/logout" class="btn btn-danger">Cerrar Sesión</a>
+            </div>
+        </header>
+
+        <div class="table-container">
+            <h2>Lista de Órdenes</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Código</th>
+                        <th>Cliente</th>
+                        <th>Conductor</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Monto</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td th:text="${order.id}"></td>
+                        <td th:text="${order.codigoSeguimiento}"></td>
+                        <td th:text="${order.cliente.nombre + ' ' + order.cliente.apellido}"></td>
+                        <td th:text="${order.conductor?.nombre + ' ' + order.conductor?.apellido}"></td>
+                        <td>
+                            <span th:switch="${order.estado}">
+                                <span th:case="'PENDIENTE'" style="color: orange;">Pendiente</span>
+                                <span th:case="'EN_PROGRESO'" style="color: blue;">En Progreso</span>
+                                <span th:case="'COMPLETADA'" style="color: green;">Completada</span>
+                                <span th:case="'CANCELADA'" style="color: red;">Cancelada</span>
+                            </span>
+                        </td>
+                        <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 2, 'COMMA')}"></td>
+                     
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html> 

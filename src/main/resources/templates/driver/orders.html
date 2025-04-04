@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mis Órdenes - Conductor</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Mis Órdenes</h1>
+        <nav>
+            <a href="/driver/dashboard">Dashboard</a>
+            <a href="/driver/orders" class="active">Órdenes</a>
+            <a href="/driver/profile">Perfil</a>
+            <a href="/logout">Cerrar Sesión</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="alert" th:if="${success}" th:text="${success}"></div>
+        <div class="alert error" th:if="${error}" th:text="${error}"></div>
+
+        <section class="orders-section">
+            <h2>Historial de Órdenes</h2>
+            
+            <div th:if="${orders.empty}">
+                <p>No tienes órdenes asignadas.</p>
+            </div>
+            
+            <div th:unless="${orders.empty}" class="orders-list">
+                <div th:each="order : ${orders}" class="order-card">
+                    <h3>Orden #<span th:text="${order.id}"></span></h3>
+                    <div class="order-details">
+                        <p><strong>Cliente:</strong> <span th:text="${order.cliente.nombre + ' ' + order.cliente.apellido}"></span></p>
+                        <p><strong>Estado:</strong> <span th:text="${order.estado}"></span></p>
+                        <p><strong>Fecha:</strong> <span th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></span></p>
+                        <p><strong>Monto:</strong> $<span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 2, 'COMMA')}"></span></p>
+                    </div>
+                    
+                    <div class="order-actions">
+                        <form th:if="${order.estado == 'PENDIENTE'}" 
+                              th:action="@{/driver/orders/{id}/accept(id=${order.id})}" 
+                              method="post">
+                            <button type="submit" class="accept-btn">Aceptar Orden</button>
+                        </form>
+                        
+                        <form th:if="${order.estado == 'EN_PROGRESO'}" 
+                              th:action="@{/driver/orders/{id}/complete(id=${order.id})}" 
+                              method="post">
+                            <button type="submit" class="complete-btn">Completar Orden</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Transportes Urgentes. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html> 
