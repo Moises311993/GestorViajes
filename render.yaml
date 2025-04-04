@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: gestion-viajes
+    env: java
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/gestion-viajes.war
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: gestion-viajes-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: gestion-viajes-db
+          property: username
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: gestion-viajes-db
+          property: password
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+
+databases:
+  - name: gestion-viajes-db
+    databaseName: gestion_viajes
+    user: gestion_viajes_user
+    plan: free 
