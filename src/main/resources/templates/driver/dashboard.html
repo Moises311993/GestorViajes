@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard - Conductor</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Bienvenido, <span th:text="${conductor.nombre + ' ' + conductor.apellido}"></span></h1>
+        <nav>
+            <a href="/driver/dashboard" class="active">Dashboard</a>
+            <a href="/driver/orders">Órdenes</a>
+            <a href="/driver/profile">Perfil</a>
+            <a href="/logout">Cerrar Sesión</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <h3>Estado Actual</h3>
+                <p th:text="${conductor.disponible ? 'Disponible' : 'No Disponible'}"></p>
+                <form th:action="@{/driver/toggle-availability}" method="post">
+                    <button type="submit" th:text="${conductor.disponible ? 'Marcar como No Disponible' : 'Marcar como Disponible'}">
+                        Cambiar Estado
+                    </button>
+                </form>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Órdenes Activas</h3>
+                <p th:text="${activeOrders.size()}">0</p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Calificación</h3>
+                <p th:text="${conductor.calificacion}">0.0</p>
+            </div>
+        </div>
+
+        <section class="active-orders">
+            <h2>Órdenes Activas</h2>
+            <div th:if="${activeOrders.empty}">
+                <p>No tienes órdenes activas en este momento.</p>
+            </div>
+            <div th:unless="${activeOrders.empty}" class="orders-list">
+                <div th:each="order : ${activeOrders}" class="order-card">
+                    <h3>Orden #<span th:text="${order.id}"></span></h3>
+                    <p><strong>Cliente:</strong> <span th:text="${order.cliente.nombre + ' ' + order.cliente.apellido}"></span></p>
+                    <p><strong>Estado:</strong> <span th:text="${order.estado}"></span></p>
+                    <p><strong>Fecha:</strong> <span th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></span></p>
+                    <div class="order-actions">
+                        <form th:action="@{/driver/orders/{id}/complete(id=${order.id})}" method="post">
+                            <button type="submit">Completar Orden</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Transportes Urgentes. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html> 
