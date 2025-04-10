@@ -22,10 +22,11 @@ public class WebSecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/home", "/register", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/", "/register", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/driver/**").hasRole("DRIVER")
                 .requestMatchers("/client/**").hasRole("CLIENT")
+                .requestMatchers("/home").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
