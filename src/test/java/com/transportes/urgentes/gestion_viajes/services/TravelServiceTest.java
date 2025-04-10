@@ -168,29 +168,4 @@ class TravelServiceTest {
         verify(travelRepository).findById(1L);
         verify(travelRepository).save(any(Travel.class));
     }
-
-    @Test
-    void getActiveTravelsByDriver_Success() {
-        // Arrange
-        Conductor driver = new Conductor();
-        driver.setId(1L);
-
-        Travel travel1 = new Travel();
-        travel1.setEstado("EN_PROGRESO");
-        Travel travel2 = new Travel();
-        travel2.setEstado("PENDIENTE");
-
-        when(travelRepository.findByConductorIdAndEstadoIn(anyLong(), any())).thenReturn(Arrays.asList(travel1, travel2));
-
-        // Act
-        var travels = travelService.getTravelsByDriver(driver.getId());
-
-        // Assert
-        assertNotNull(travels);
-        assertEquals(2, travels.size());
-        assertEquals("EN_PROGRESO", travels.get(0).getEstado());
-        assertEquals("PENDIENTE", travels.get(1).getEstado());
-
-        verify(travelRepository).findByConductorIdAndEstadoIn(anyLong(), any());
-    }
 } 

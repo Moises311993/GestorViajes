@@ -1,4 +1,4 @@
-package com.transportes.urgentes.gestion_viajes;
+package com.transportes.urgentes.gestion_viajes.dashboards;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;

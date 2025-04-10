@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gestión de Órdenes - Administrador</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Gestión de Órdenes</h1>
+        <nav>
+            <a href="/admin/dashboard">Dashboard</a>
+            <a href="/admin/orders" class="active">Órdenes</a>
+            <a href="/admin/drivers">Conductores</a>
+            <a href="/admin/users">Usuarios</a>
+            <a href="/logout">Cerrar Sesión</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="alert" th:if="${success}" th:text="${success}"></div>
+        <div class="alert error" th:if="${error}" th:text="${error}"></div>
+
+        <section class="orders-section">
+            <h2>Lista de Órdenes</h2>
+            
+            <div th:if="${orders.empty}">
+                <p>No hay órdenes registradas.</p>
+            </div>
+            
+            <div th:unless="${orders.empty}" class="orders-list">
+                <div th:each="order : ${orders}" class="order-card">
+                    <h3>Orden #<span th:text="${order.numeroPedido}"></span></h3>
+                    <div class="order-details">
+                        <p><strong>Cliente:</strong> <span th:text="${order.cliente.nombre + ' ' + order.cliente.apellido}"></span></p>
+                        <p><strong>Estado:</strong> <span th:text="${order.estado}"></span></p>
+                        <p><strong>Fecha:</strong> <span th:text="${#temporals.format(order.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></span></p>
+                        <p><strong>Monto:</strong> $<span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 2, 'COMMA')}"></span></p>
+                        <p th:if="${order.conductor != null}">
+                            <strong>Conductor Asignado:</strong> 
+                            <span th:text="${order.conductor.nombre + ' ' + order.conductor.apellido}"></span>
+                        </p>
+                    </div>
+                    <div class="order-actions">
+                        <a th:href="@{/admin/orders/{id}/manage(id=${order.id})}" class="btn">Gestionar</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Transportes Urgentes. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html> 

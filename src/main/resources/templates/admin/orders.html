@@ -45,7 +45,7 @@
                                 <span th:case="'CANCELADA'" style="color: red;">Cancelada</span>
                             </span>
                         </td>
-                        <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td th:text="${#temporals.format(order.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></td>
                         <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 2, 'COMMA')}"></td>
                      
                     </tr>

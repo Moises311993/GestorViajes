@@ -4,6 +4,7 @@ import com.transportes.urgentes.gestion_viajes.exception.ResourceNotFoundExcepti
 import com.transportes.urgentes.gestion_viajes.users.User;
 import com.transportes.urgentes.gestion_viajes.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,9 @@ public class ConductorService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public Optional<Conductor> getDriverByUsername(String username) {
         return driverRepository.findByUsername(username);
@@ -44,6 +48,14 @@ public class ConductorService {
 
     @Transactional
     public Conductor createDriver(Conductor driver) {
+        if (driverRepository.existsByUsername(driver.getUsername())) {
+            throw new RuntimeException("El nombre de usuario ya está en uso");
+        }
+        if (driverRepository.existsByEmail(driver.getEmail())) {
+            throw new RuntimeException("El email ya está en uso");
+        }
+        
+        driver.setPassword(passwordEncoder.encode(driver.getPassword()));
         return driverRepository.save(driver);
     }
 
@@ -51,10 +63,11 @@ public class ConductorService {
     public Conductor updateDriver(Long id, Conductor driverDetails) {
         Conductor driver = driverRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Conductor no encontrado"));
+            
         driver.setDisponible(driverDetails.isDisponible());
-        driver.setNombre(driver.getNombre());
-        driver.setApellido(driver.getApellido());
-        driver.setEmail(driver.getEmail());
+        driver.setNombre(driverDetails.getNombre());
+        driver.setApellido(driverDetails.getApellido());
+        driver.setEmail(driverDetails.getEmail());
         driver.setTipoLicencia(driverDetails.getTipoLicencia());
         driver.setLicenciaConduccion(driverDetails.getLicenciaConduccion());
         driver.setCalificacion(driverDetails.getCalificacion());
@@ -79,7 +92,7 @@ public class ConductorService {
     }
 
     public long countActiveDrivers() {
-        return  driverRepository.countByDisponibleIsTrue();
+        return driverRepository.countByDisponibleIsTrue();
     }
 
     public Map<String, Object> getDriverStatistics() {
@@ -102,5 +115,13 @@ public class ConductorService {
                 .limit(5)
                 .collect(Collectors.toList())
         );
+    }
+
+    public List<Conductor> getAvailableDrivers() {
+        return driverRepository.findByDisponibleTrue();
+    }
+
+    public Conductor getConductorById(Long driverId) {
+        return driverRepository.findById(driverId).orElseThrow(() -> new ResourceNotFoundException("Conductor no encontrado"));
     }
 }

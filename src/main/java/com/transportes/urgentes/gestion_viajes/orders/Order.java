@@ -62,8 +62,8 @@ public class Order {
     @JoinColumn(name = "conductor_id")
     private Conductor conductor;
 
-    @Transient
-    private double totalAmount;
+    @Column(name = "total_amount")
+    private Double totalAmount;
     
     private LocalDateTime createdAt;
     private LocalDateTime fechaCompletada;
@@ -73,10 +73,27 @@ public class Order {
     protected void onCreate() {
         fechaCreacion = LocalDateTime.now();
         fechaActualizacion = LocalDateTime.now();
+        createdAt = LocalDateTime.now();
+        calculateTotalAmount();
     }
     
     @PreUpdate
     protected void onUpdate() {
         fechaActualizacion = LocalDateTime.now();
+        calculateTotalAmount();
+    }
+
+    private void calculateTotalAmount() {
+        double basePrice = 50.0;
+        
+        if (peso != null) {
+            basePrice += peso * 10;
+        }
+        
+        if (dimensiones != null && !dimensiones.isEmpty()) {
+            basePrice += 20;
+        }
+        
+        this.totalAmount = basePrice;
     }
 }
