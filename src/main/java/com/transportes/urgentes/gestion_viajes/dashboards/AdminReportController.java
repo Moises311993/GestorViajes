@@ -1,4 +1,4 @@
-package com.transportes.urgentes.gestion_viajes.controllers;
+package com.transportes.urgentes.gestion_viajes.dashboards;
 
 import com.transportes.urgentes.gestion_viajes.drivers.ConductorService;
 import com.transportes.urgentes.gestion_viajes.orders.OrderService;
