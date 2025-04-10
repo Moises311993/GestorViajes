@@ -9,12 +9,12 @@
 	<groupId>com.transportes.urgentes</groupId>
 	<artifactId>gestion-viajes</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>gestion-viajes</name>
 	<description>Sistema de Gestión de Viajes</description>
-	<packaging>war</packaging>
 	<properties>
 		<java.version>17</java.version>
-		<postgresql.version>42.6.0</postgresql.version>
+		<postgresql.version>42.7.2</postgresql.version>
 	</properties>
 	<dependencies>
 		<dependency>
