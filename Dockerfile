@@ -17,4 +17,4 @@ RUN addgroup -S spring && adduser -S spring -G spring
 USER spring
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "app.jar"]
