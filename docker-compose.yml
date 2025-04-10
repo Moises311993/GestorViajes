@@ -1,43 +1,17 @@
 version: '3.8'
 
 services:
-  db:
-    image: postgres:15-alpine
-    container_name: gestion-viajes-db
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_DB=gestion_viajes
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - app-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    restart: unless-stopped
-
   app:
     build: .
     container_name: gestion-viajes-app
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/gestion_viajes
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_DATASOURCE_URL=${DATABASE_URL}
+      - SPRING_DATASOURCE_USERNAME=${DATABASE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_PROFILES_ACTIVE=prod
     ports:
       - "8080:8080"
-    command: ["sh", "-c", "/wait-for-db.sh db java -Dspring.profiles.active=prod -jar app.jar"]
-    depends_on:
-      - db
-    networks:
-      - app-network
     restart: on-failure
 
 volumes:
