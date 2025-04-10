@@ -11,6 +11,11 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
+COPY wait-for-db.sh /wait-for-db.sh
+
+# Install PostgreSQL client for health check
+RUN apk add --no-cache postgresql-client && \
+    chmod +x /wait-for-db.sh
 
 # Add a non-root user for security
 RUN addgroup -S spring && adduser -S spring -G spring
