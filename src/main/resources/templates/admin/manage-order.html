@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Detalles de Orden - Cliente</title>
+    <title>Gestionar Orden - Administrador</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
     <header>
-        <h1>Detalles de Orden</h1>
+        <h1>Gestionar Orden</h1>
         <nav>
-            <a href="/client/dashboard">Dashboard</a>
-            <a href="/client/orders">Órdenes</a>
-            <a href="/client/orders/new">Nueva Orden</a>
-            <a href="/client/profile">Perfil</a>
+            <a href="/admin/dashboard">Dashboard</a>
+            <a href="/admin/orders">Órdenes</a>
+            <a href="/admin/drivers">Conductores</a>
+            <a href="/admin/users">Usuarios</a>
             <a href="/logout">Cerrar Sesión</a>
         </nav>
     </header>
@@ -20,7 +20,7 @@
         <div class="alert" th:if="${success}" th:text="${success}"></div>
         <div class="alert error" th:if="${error}" th:text="${error}"></div>
 
-        <section class="order-details-section">
+        <section class="manage-order-section">
             <div class="order-header">
                 <h2>Orden #<span th:text="${order.numeroPedido}"></span></h2>
                 <div class="order-status" th:classappend="${order.estado == 'PENDIENTE' ? 'pending' : 
@@ -33,8 +33,9 @@
             <div class="order-info">
                 <div class="info-group">
                     <h3>Información de la Orden</h3>
+                    <p><strong>Cliente:</strong> <span th:text="${order.cliente.nombre + ' ' + order.cliente.apellido}"></span></p>
                     <p><strong>Fecha de Creación:</strong> <span th:text="${#temporals.format(order.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></span></p>
-                    <p><strong>Estado:</strong> <span th:text="${order.estado}"></span></p>
+                    <p><strong>Estado Actual:</strong> <span th:text="${order.estado}"></span></p>
                     <p><strong>Monto Total:</strong> $<span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 2, 'COMMA')}"></span></p>
                 </div>
 
@@ -45,23 +46,42 @@
                     <p><strong>Descripción:</strong> <span th:text="${order.descripcion}"></span></p>
                     <p><strong>Peso:</strong> <span th:text="${order.peso}"></span> kg</p>
                     <p><strong>Dimensiones:</strong> <span th:text="${order.dimensiones}"></span></p>
-                    <p th:if="${order.instruccionesEspeciales != null && !order.instruccionesEspeciales.empty}">
-                        <strong>Instrucciones Especiales:</strong> <span th:text="${order.instruccionesEspeciales}"></span>
-                    </p>
                 </div>
 
                 <div class="info-group" th:if="${order.conductor != null}">
-                    <h3>Información del Conductor</h3>
+                    <h3>Conductor Asignado</h3>
                     <p><strong>Nombre:</strong> <span th:text="${order.conductor.nombre + ' ' + order.conductor.apellido}"></span></p>
                     <p><strong>Licencia:</strong> <span th:text="${order.conductor.licenciaConduccion}"></span></p>
                 </div>
             </div>
 
-            <div class="order-actions" th:if="${order.estado == 'PENDIENTE'}">
-                <a th:href="@{/client/orders/{id}/edit(id=${order.id})}" class="btn">Editar Orden</a>
-                <form th:action="@{/client/orders/{id}/cancel(id=${order.id})}" method="post" style="display: inline;">
-                    <button type="submit" class="btn danger">Cancelar Orden</button>
-                </form>
+            <div class="management-actions">
+                <div class="action-group">
+                    <h3>Cambiar Estado</h3>
+                    <form th:action="@{/admin/orders/{id}/update-status(id=${order.id})}" method="post">
+                        <select name="newStatus" required>
+                            <option value="PENDIENTE" th:selected="${order.estado == 'PENDIENTE'}">Pendiente</option>
+                            <option value="EN_PROGRESO" th:selected="${order.estado == 'EN_PROGRESO'}">En Progreso</option>
+                            <option value="COMPLETADA" th:selected="${order.estado == 'COMPLETADA'}">Completada</option>
+                            <option value="CANCELADA" th:selected="${order.estado == 'CANCELADA'}">Cancelada</option>
+                        </select>
+                        <button type="submit" class="btn">Actualizar Estado</button>
+                    </form>
+                </div>
+
+                <div class="action-group" th:unless="${order.estado == 'COMPLETADA' || order.estado == 'CANCELADA'}">
+                    <h3>Asignar Conductor</h3>
+                    <form th:action="@{/admin/orders/{id}/assign-driver(id=${order.id})}" method="post">
+                        <select name="driverId" required>
+                            <option value="">Seleccionar Conductor</option>
+                            <option th:each="driver : ${availableDrivers}"
+                                    th:value="${driver.id}"
+                                    th:text="${driver.nombre + ' ' + driver.apellido + ' - ' + driver.licenciaConduccion}">
+                            </option>
+                        </select>
+                        <button type="submit" class="btn">Asignar Conductor</button>
+                    </form>
+                </div>
             </div>
         </section>
     </main>

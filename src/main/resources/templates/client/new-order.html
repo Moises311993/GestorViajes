@@ -24,13 +24,13 @@
             <h2>Crear Nueva Orden</h2>
             <form th:action="@{/client/orders}" method="post" th:object="${order}">
                 <div class="form-group">
-                    <label for="origen">Origen</label>
-                    <input type="text" id="origen" th:field="*{origen}" required>
+                    <label for="direccionOrigen">Dirección de Origen</label>
+                    <input type="text" id="direccionOrigen" th:field="*{direccionOrigen}" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="destino">Destino</label>
-                    <input type="text" id="destino" th:field="*{destino}" required>
+                    <label for="direccionDestino">Dirección de Destino</label>
+                    <input type="text" id="direccionDestino" th:field="*{direccionDestino}" required>
                 </div>
                 
                 <div class="form-group">
@@ -45,16 +45,12 @@
                 
                 <div class="form-group">
                     <label for="dimensiones">Dimensiones (cm)</label>
-                    <div class="dimensions-input">
-                        <input type="number" id="largo" th:field="*{largo}" min="1" placeholder="Largo" required>
-                        <input type="number" id="ancho" th:field="*{ancho}" min="1" placeholder="Ancho" required>
-                        <input type="number" id="alto" th:field="*{alto}" min="1" placeholder="Alto" required>
-                    </div>
+                    <input type="text" id="dimensiones" th:field="*{dimensiones}" placeholder="Ej: 30x20x10" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="fechaRecogida">Fecha de Recogida</label>
-                    <input type="datetime-local" id="fechaRecogida" th:field="*{fechaRecogida}" required>
+                    <label for="instruccionesEspeciales">Instrucciones Especiales</label>
+                    <textarea id="instruccionesEspeciales" th:field="*{instruccionesEspeciales}" rows="3"></textarea>
                 </div>
                 
                 <div class="form-group">

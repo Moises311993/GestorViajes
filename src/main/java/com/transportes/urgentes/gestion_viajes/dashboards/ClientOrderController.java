@@ -4,6 +4,7 @@ import com.transportes.urgentes.gestion_viajes.orders.Order;
 import com.transportes.urgentes.gestion_viajes.orders.OrderService;
 import com.transportes.urgentes.gestion_viajes.users.User;
 import com.transportes.urgentes.gestion_viajes.users.UserRole;
+import com.transportes.urgentes.gestion_viajes.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,9 @@ public class ClientOrderController {
 
     @Autowired
     private OrderService orderService;
+    
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/new")
     public String showNewOrderForm(Model model) {
@@ -36,13 +40,17 @@ public class ClientOrderController {
     @PostMapping
     public String createOrder(@ModelAttribute Order order, RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
+        User authUser = (User) auth.getPrincipal();
         
-        if (user.getRole() != UserRole.CLIENT) {
+        if (authUser.getRole() != UserRole.CLIENT) {
             return "redirect:/login";
         }
 
         try {
+            // Get a fresh user object from the database using the username
+            User user = userService.getUserByUsername(authUser.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con username: " + authUser.getUsername()));
+            
             order.setCliente(user);
             order.setEstado("PENDIENTE");
             orderService.createOrder(order);
@@ -57,11 +65,13 @@ public class ClientOrderController {
     @GetMapping("/{id}")
     public String viewOrder(@PathVariable Long id, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
+        User authUser = (User) auth.getPrincipal();
         
-        if (user.getRole() != UserRole.CLIENT) {
+        if (authUser.getRole() != UserRole.CLIENT) {
             return "redirect:/login";
         }
+
+        User user = userService.getUserByUsername(authUser.getUsername()).orElseThrow(() -> new RuntimeException("Usuario no encontrado con username: " + authUser.getUsername()));
 
         try {
             Order order = orderService.getOrderById(id);

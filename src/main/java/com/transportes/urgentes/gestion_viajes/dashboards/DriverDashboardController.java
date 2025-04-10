@@ -1,4 +1,4 @@
-package com.transportes.urgentes.gestion_viajes.controllers;
+package com.transportes.urgentes.gestion_viajes.dashboards;
 
 import com.transportes.urgentes.gestion_viajes.drivers.Conductor;
 import com.transportes.urgentes.gestion_viajes.drivers.ConductorService;
@@ -6,6 +6,7 @@ import com.transportes.urgentes.gestion_viajes.orders.Order;
 import com.transportes.urgentes.gestion_viajes.orders.OrderService;
 import com.transportes.urgentes.gestion_viajes.users.User;
 import com.transportes.urgentes.gestion_viajes.users.UserRole;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/driver")
@@ -35,7 +37,10 @@ public class DriverDashboardController {
             return "redirect:/login";
         }
 
-        Conductor conductor = (Conductor) user;
+        // Obtener el conductor más reciente de la base de datos
+        Conductor conductor = conductorService.getDriverByUsername(user.getUsername())
+            .orElseThrow(() -> new RuntimeException("Conductor no encontrado"));
+            
         List<Order> activeOrders = orderService.getActiveOrdersByDriver(conductor.getId());
         
         model.addAttribute("conductor", conductor);
@@ -69,15 +74,26 @@ public class DriverDashboardController {
             return "redirect:/login";
         }
 
-        Conductor conductor = (Conductor) user;
-        conductor.setDisponible(!conductor.isDisponible());
-        conductorService.updateDriver(conductor.getId(), conductor);
-        
-        String message = conductor.isDisponible() ? 
-            "Ahora estás disponible para recibir órdenes" : 
-            "Ya no estás disponible para recibir órdenes";
+        try {
+            Conductor conductor = conductorService.getDriverByUsername(user.getUsername())
+                .orElseThrow(() -> new RuntimeException("Conductor no encontrado con username " + user.getUsername()));
             
-        redirectAttributes.addFlashAttribute("message", message);
+            boolean newAvailability = !conductor.isDisponible();
+            conductor.setDisponible(newAvailability);
+            
+            // Guardar el conductor actualizado
+            Conductor updatedConductor = conductorService.updateDriver(conductor.getId(), conductor);
+            
+            String message = updatedConductor.isDisponible() ? 
+                "Ahora estás disponible para recibir órdenes" : 
+                "Ya no estás disponible para recibir órdenes";
+            Logger.getLogger("DEBUG").info(message);
+            redirectAttributes.addFlashAttribute("success", message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "No se pudo actualizar la disponibilidad: " + e.getMessage());
+        }
+        
         return "redirect:/driver/dashboard";
     }
 

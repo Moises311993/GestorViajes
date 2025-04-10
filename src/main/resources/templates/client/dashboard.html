@@ -40,7 +40,7 @@
                     <h3>Orden #<span th:text="${order.id}"></span></h3>
                     <div class="order-details">
                         <p><strong>Estado:</strong> <span th:text="${order.estado}"></span></p>
-                        <p><strong>Fecha:</strong> <span th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></span></p>
+                        <p><strong>Fecha:</strong> <span th:text="${#temporals.format(order.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></span></p>
                         <p><strong>Monto:</strong> $<span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 2, 'COMMA')}"></span></p>
                         <p th:if="${order.conductor != null}">
                             <strong>Conductor:</strong> 
