@@ -10,7 +10,7 @@ RUN mvn clean package -DskipTests
 # Run stage
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-COPY --from=build /app/target/geston-viajes.jar app.jar
+COPY --from=build /app/target/gestor-viajes.jar app.jar
 
 # Add a non-root user for security
 RUN addgroup -S spring && adduser -S spring -G spring
