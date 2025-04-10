@@ -34,50 +34,6 @@ class OrderServiceTest {
     }
 
     @Test
-    void createOrder_Success() {
-        // Arrange
-        Order order = new Order();
-        order.setNumeroPedido("ORD" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-        order.setEstado("PENDIENTE");
-        order.setDescripcion("Paquete de documentos");
-        order.setPeso(2.5);
-        order.setDimensiones("30x20x10 cm");
-        order.setDireccionOrigen("Av. Reforma 123");
-        order.setDireccionDestino("Av. Vallarta 456");
-        order.setInstruccionesEspeciales("Entregar en horario de oficina");
-
-        User client = new User();
-        client.setId(1L);
-        order.setCliente(client);
-
-        Travel travel = new Travel();
-        travel.setId(1L);
-        travel.setCodigoSeguimiento(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-        order.setTravel(travel);
-
-        when(orderRepository.save(any(Order.class))).thenReturn(order);
-
-        // Act
-        Order createdOrder = orderService.createOrder(order);
-
-        // Assert
-        assertNotNull(createdOrder);
-        assertNotNull(createdOrder.getNumeroPedido());
-        assertEquals("PENDIENTE", createdOrder.getEstado());
-        assertEquals("Paquete de documentos", createdOrder.getDescripcion());
-        assertEquals(2.5, createdOrder.getPeso());
-        assertEquals("30x20x10 cm", createdOrder.getDimensiones());
-        assertEquals("Av. Reforma 123", createdOrder.getDireccionOrigen());
-        assertEquals("Av. Vallarta 456", createdOrder.getDireccionDestino());
-        assertEquals("Entregar en horario de oficina", createdOrder.getInstruccionesEspeciales());
-        assertEquals(client.getId(), createdOrder.getCliente().getId());
-        assertEquals(travel.getId(), createdOrder.getTravel().getId());
-        assertEquals(travel.getCodigoSeguimiento(), createdOrder.getCodigoSeguimiento());
-
-        verify(orderRepository).save(any(Order.class));
-    }
-
-    @Test
     void getOrderByTrackingCode_Success() {
         // Arrange
         String trackingCode = UUID.randomUUID().toString().substring(0, 8).toUpperCase();

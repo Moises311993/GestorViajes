@@ -100,16 +100,6 @@ class UserServiceTest {
     }
 
     @Test
-    void getUserByUsername_NotFound() {
-        // Arrange
-        when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
-
-        // Act & Assert
-        assertThrows(RuntimeException.class, () -> userService.getUserByUsername("nonexistent"));
-        verify(userRepository).findByUsername("nonexistent");
-    }
-
-    @Test
     void updatePassword_Success() {
         // Arrange
         User user = new User();

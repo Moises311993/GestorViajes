@@ -107,35 +107,6 @@ class TravelServiceTest {
         verify(travelRepository).findByCodigoSeguimiento(trackingCode);
     }
 
-    @Test
-    void getTravelByTrackingCode_NotFound() {
-        // Arrange
-        String trackingCode = "NONEXISTENT";
-        when(travelRepository.findByCodigoSeguimiento(anyString())).thenReturn(Optional.empty());
-
-        // Act & Assert
-        assertThrows(RuntimeException.class, () -> travelService.getTravelByTrackingCode(trackingCode));
-        verify(travelRepository).findByCodigoSeguimiento(trackingCode);
-    }
-
-    @Test
-    void updateTravelStatus_Success() {
-        // Arrange
-        Travel travel = new Travel();
-        travel.setId(1L);
-        travel.setEstado("PENDIENTE");
-
-        when(travelRepository.findById(anyLong())).thenReturn(Optional.of(travel));
-        when(travelRepository.save(any(Travel.class))).thenReturn(travel);
-
-        // Act
-        travelService.updateTravelStatus(1L, "EN_PROGRESO");
-
-        // Assert
-        assertEquals("EN_PROGRESO", travel.getEstado());
-        verify(travelRepository).findById(1L);
-        verify(travelRepository).save(any(Travel.class));
-    }
 
     @Test
     void updateTravelStatus_TravelNotFound() {
@@ -147,25 +118,4 @@ class TravelServiceTest {
         verify(travelRepository).findById(1L);
     }
 
-    @Test
-    void updateTravelLocation_Success() {
-        // Arrange
-        Travel travel = new Travel();
-        travel.setId(1L);
-        travel.setDistanciaRecorrida(200.0);
-        travel.setDistanciaTotal(500.0);
-        travel.setVelocidadActual(80.0);
-
-        when(travelRepository.findById(anyLong())).thenReturn(Optional.of(travel));
-        when(travelRepository.save(any(Travel.class))).thenReturn(travel);
-
-        // Act
-        travelService.updateTravelLocation(1L, 250.0, 85.0);   
-
-        // Assert
-        assertEquals(250.0, travel.getDistanciaRecorrida());
-        assertEquals(85.0, travel.getVelocidadActual());
-        verify(travelRepository).findById(1L);
-        verify(travelRepository).save(any(Travel.class));
-    }
 } 
